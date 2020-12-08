@@ -18,10 +18,11 @@ etherpad_blank_pads_count{instance="etherpad-test"} 2
 etherpad_connected_users_count{instance="etherpad-test"} 1
 ```
 
-You can set a specific `instance` label to your metrics with a configuration key on Etherpad `settings.json` file :
+You can set some specific values on `settings.json` file :
 
 ```json
 "ep_prometheus_exporter": {
-  "instanceName": "etherpad-test"
+  "instanceName": "INSTANCE LABEL ON METRICS",
+  "updateInterval": 60
 }
 ```

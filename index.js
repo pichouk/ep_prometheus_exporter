@@ -87,7 +87,7 @@ exports.expressCreateServer = async (hook_name, args) => {
   });
 
   // Get instance name
-  var instanceName =
+  const instanceName =
     settings.instanceName !== undefined ? settings.instanceName : "etherpad";
 
   // Add custom views folder
@@ -106,3 +106,7 @@ exports.expressCreateServer = async (hook_name, args) => {
     });
   });
 };
+
+const updateInterval =
+  settings.updateInterval !== undefined ? settings.updateInterval : 60;
+setInterval(updateMetrics, updateInterval * 1000);
