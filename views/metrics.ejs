@@ -1,0 +1,11 @@
+# HELP etherpad_pads_count Number of pads
+# TYPE etherpad_pads_count gauge
+etherpad_pads_count{instance="<%= instanceName %>"} <%= metrics.padsCount %>
+
+# HELP etherpad_blank_pads_count Number of blank pads
+# TYPE etherpad_blank_pads_count gauge
+etherpad_blank_pads_count{instance="<%= instanceName %>"} <%= metrics.blankPadsCount %>
+
+# HELP etherpad_connected_users_count Number of connected users
+# TYPE etherpad_connected_users_count gauge
+etherpad_connected_users_count{instance="<%= instanceName %>"} <%= metrics.connectedUsers %>

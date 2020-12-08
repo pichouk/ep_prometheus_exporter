@@ -1,0 +1,14 @@
+{
+  "parts": [
+    {
+      "name": "ep_prometheus_exporter",
+      "hooks": {
+        "expressCreateServer": "ep_prometheus_exporter/index:expressCreateServer",
+        "padCreate": "ep_prometheus_exporter/index:padCreate",
+        "padLoad": "ep_prometheus_exporter/index:padLoad",
+        "padUpdate": "ep_prometheus_exporter/index:padUpdate",
+        "padRemove": "ep_prometheus_exporter/index:padRemove"
+      }
+    }
+  ]
+}

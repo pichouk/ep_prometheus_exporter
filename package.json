@@ -1,0 +1,11 @@
+{
+  "name": "ep_prometheus_exporter",
+  "version": "0.0.1",
+  "description": "Adds a prometheus exporter on /metrics",
+  "repository": {
+    "type": "git",
+    "url": "https://framagit.org/pichouk/ep_prometheus_exporter.git"
+  },
+  "author": "Kyâne Pichou",
+  "license": "GPL-3.0-or-later"
+}
