@@ -1,6 +1,6 @@
 {
   "name": "ep_prometheus_exporter",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Adds a prometheus exporter on /metrics",
   "repository": {
     "type": "git",
