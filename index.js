@@ -100,6 +100,7 @@ exports.expressCreateServer = async (hook_name, args) => {
 
   // Expose metrics
   args.app.get("/metrics", function (req, res) {
+    res.setHeader("Content-Type", "text/plain");
     res.render("metrics.ejs", {
       instanceName: instanceName,
       metrics: metrics,
