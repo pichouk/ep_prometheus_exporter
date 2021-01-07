@@ -17,8 +17,9 @@ var blankPads = {};
 // Update all metrics
 async function updateMetrics() {
   // Count all pads
-  const padsList = await epAPI.listAllPads();
-  metrics.padsCount = padsList.padIDs.length;
+  epAPI.listAllPads().then((padsList) => {
+    metrics.padsCount = padsList.padIDs.length;
+  });
 
   // Get number of blank pads
   metrics.blankPadsCount = Object.keys(blankPads).length;
@@ -30,41 +31,48 @@ async function updateMetrics() {
   metrics.connectedUsers = epStats.totalUsers;
 }
 
-// Update the blank pads list based on a pad event
-async function updateBlankPads(pad) {
-  if (pad.head === 0) {
-    blankPads[pad.id] = 1;
+// When a new pad is created
+exports.padCreate = (hook_name, context) => {
+  // Update the blank pad list
+  if (context.pad.head === 0) {
+    blankPads[context.pad.id] = 1;
   } else {
-    if (blankPads[pad.id] !== undefined) {
-      delete blankPads[pad.id];
+    if (blankPads[context.pad.id] !== undefined) {
+      delete blankPads[context.pad.id];
     }
   }
-}
-
-// When a new pad is created
-exports.padCreate = async (hook_name, context) => {
-  // Update the blank pad list
-  await updateBlankPads(context.pad);
   // Update all metrics
   updateMetrics();
 };
 
 // When a pad is loaded (opened)
-exports.padLoad = async (hook_name, context) => {
+exports.padLoad = (hook_name, context) => {
   // Update blank pad list
-  await updateBlankPads(context.pad);
+  if (context.pad.head === 0) {
+    blankPads[context.pad.id] = 1;
+  } else {
+    if (blankPads[context.pad.id] !== undefined) {
+      delete blankPads[context.pad.id];
+    }
+  }
   metrics.blankPadsCount = Object.keys(blankPads).length;
 };
 
 // When a pad is updated
-exports.padUpdate = async (hook_name, context) => {
+exports.padUpdate = (hook_name, context) => {
   // Update blank pad list
-  await updateBlankPads(context.pad);
+  if (context.pad.head === 0) {
+    blankPads[context.pad.id] = 1;
+  } else {
+    if (blankPads[context.pad.id] !== undefined) {
+      delete blankPads[context.pad.id];
+    }
+  }
   metrics.blankPadsCount = Object.keys(blankPads).length;
 };
 
 // When a pad is removed
-exports.padRemove = async (hook_name, context) => {
+exports.padRemove = (hook_name, context) => {
   // Update blank pad list
   var padId = context.padID;
   if (blankPads[padId] !== undefined) {
@@ -75,17 +83,7 @@ exports.padRemove = async (hook_name, context) => {
 };
 
 // When Etherpad server is started
-exports.expressCreateServer = async (hook_name, args) => {
-  // Initialize metrics
-  await updateMetrics();
-  // Initialize blank pad count
-  const padsList = await epAPI.listAllPads();
-  padsList.padIDs.forEach(async (padID) => {
-    if ((await epAPI.getRevisionsCount(padID)).revisions <= 1) {
-      blankPads[padID] = 1;
-    }
-  });
-
+exports.expressCreateServer = (hook_name, args, callback) => {
   // Get instance name
   const instanceName =
     settings.instanceName !== undefined ? settings.instanceName : "etherpad";
@@ -106,6 +104,20 @@ exports.expressCreateServer = async (hook_name, args) => {
       metrics: metrics,
     });
   });
+
+  // Initialize blank pad count
+  epAPI.listAllPads().then((padsList) => {
+    padsList.padIDs.forEach((padID) => {
+      if (epAPI.getRevisionsCount(padID).revisions <= 1) {
+        blankPads[padID] = 1;
+      }
+    });
+  });
+
+  // Initialize metrics
+  updateMetrics();
+
+  return callback();
 };
 
 const updateInterval =
