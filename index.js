@@ -24,11 +24,19 @@ async function updateMetrics() {
   // Get number of blank pads
   metrics.blankPadsCount = Object.keys(blankPads).length;
 
-  // Get Etherpad stats
-  const epStats = require("ep_etherpad-lite/node/stats").toJSON();
+  // When Etherpad starts, internal metrics might not be available and the require may throw a TypeError
+  try {
+    // Get Etherpad stats
+    const epStats = require("ep_etherpad-lite/node/stats").toJSON();
 
-  // Update connected users
-  metrics.connectedUsers = epStats.totalUsers;
+    // Update connected users
+    metrics.connectedUsers = epStats.totalUsers;
+  } catch (error) {
+    if (!error instanceof TypeError) {
+      console.error("Exception when updating connected users");
+      console.error(error);
+    }
+  }
 }
 
 // When a new pad is created
