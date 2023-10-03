@@ -4,7 +4,7 @@
   "description": "Adds a prometheus exporter on /metrics",
   "repository": {
     "type": "git",
-    "url": "https://framagit.org/pichouk/ep_prometheus_exporter.git"
+    "url": "https://github.com/pichouk/ep_prometheus_exporter"
   },
   "author": "Kyâne Pichou",
   "license": "GPL-3.0-or-later"
